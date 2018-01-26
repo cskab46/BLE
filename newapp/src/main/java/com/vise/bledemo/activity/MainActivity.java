@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vise.baseble.ViseBle;
 import com.vise.baseble.model.BluetoothLeDevice;
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_about://关于
-                displayAboutDialog();
+                displayLocalDevice();
                 break;
         }
         return true;
@@ -273,5 +274,12 @@ public class MainActivity extends AppCompatActivity {
                 .string.ok, null)
                 .setView(textView).show();
     }
+    /**
+     * 显示本机信息
+     */
+    private void displayLocalDevice() {
+        Toast.makeText(this, "Show Local Device: " + ViseBle.getInstance().getBluetoothAdapter().getDefaultAdapter().getName() + " " + ViseBle.getInstance().getBluetoothAdapter().getDefaultAdapter().getAddress(), Toast.LENGTH_SHORT).show();
+    }
+
 
 }
