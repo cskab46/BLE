@@ -1,5 +1,8 @@
 package com.vise.bledemo.activity;
 
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.vise.baseble.Advertiser.AdvertiserService;
 import com.vise.baseble.ViseBle;
 import com.vise.baseble.callback.scan.IScanCallback;
-import com.vise.baseble.callback.scan.ScanCallback;
+import com.vise.baseble.callback.scan.ViseLeScanCallback;
+import com.vise.baseble.callback.scan.ViseScanCallback;
 import com.vise.baseble.model.BluetoothLeDevice;
 import com.vise.baseble.model.BluetoothLeDeviceStore;
 import com.vise.bledemo.R;
@@ -20,6 +25,7 @@ import com.vise.bledemo.adapter.DeviceAdapter;
 import com.vise.log.ViseLog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 设备扫描展示界面
@@ -39,7 +45,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     /**
      * 扫描回调
      */
-    private ScanCallback periodScanCallback = new ScanCallback(new IScanCallback() {
+    private ViseScanCallback periodScanCallback = new ViseScanCallback(new IScanCallback() {
         @Override
         public void onDeviceFound(final BluetoothLeDevice bluetoothLeDevice) {
             ViseLog.i("Founded Scan Device:" + bluetoothLeDevice);
@@ -63,6 +69,28 @@ public class DeviceScanActivity extends AppCompatActivity {
         @Override
         public void onScanTimeout() {
             ViseLog.i("scan timeout");
+        }
+
+    }, new ViseLeScanCallback() {
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+            for (ScanResult result : results) {
+            }
+            ViseLog.i("onBatchScanResults ");
+        }
+
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            ViseLog.i("onScanResult ");
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            ViseLog.i("onScanFailed ");
         }
     });
 
@@ -91,6 +119,8 @@ public class DeviceScanActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ViseLog.i("start AdvertiserService!");
+        startService(new Intent(getBaseContext(), AdvertiserService.class));
     }
 
     @Override
@@ -111,6 +141,8 @@ public class DeviceScanActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ViseLog.i("stop AdvertiserService!");
+        stopService(new Intent(getBaseContext(), AdvertiserService.class));
     }
 
     /**

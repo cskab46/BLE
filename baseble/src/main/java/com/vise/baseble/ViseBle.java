@@ -2,6 +2,8 @@ package com.vise.baseble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +11,8 @@ import android.text.TextUtils;
 
 import com.vise.baseble.callback.IConnectCallback;
 import com.vise.baseble.callback.scan.IScanCallback;
-import com.vise.baseble.callback.scan.ScanCallback;
+import com.vise.baseble.callback.scan.ViseLeScanCallback;
+import com.vise.baseble.callback.scan.ViseScanCallback;
 import com.vise.baseble.callback.scan.SingleFilterScanCallback;
 import com.vise.baseble.common.BleConfig;
 import com.vise.baseble.common.ConnectState;
@@ -19,6 +22,8 @@ import com.vise.baseble.exception.TimeoutException;
 import com.vise.baseble.model.BluetoothLeDevice;
 import com.vise.baseble.model.BluetoothLeDeviceStore;
 import com.vise.log.ViseLog;
+
+import java.util.List;
 
 /**
  * @Description: BLE设备操作入口
@@ -80,25 +85,25 @@ public class ViseBle {
     /**
      * 开始扫描
      *
-     * @param scanCallback 自定义回调
+     * @param ViseScanCallback 自定义回调
      */
-    public void startScan(ScanCallback scanCallback) {
-        if (scanCallback == null) {
-            throw new IllegalArgumentException("this ScanCallback is Null!");
+    public void startScan(ViseScanCallback ViseScanCallback) {
+        if (ViseScanCallback == null) {
+            throw new IllegalArgumentException("this ViseScanCallback is Null!");
         }
-        scanCallback.setScan(true).scan();
+        ViseScanCallback.setScan(true).scan();
     }
 
     /**
      * 停止扫描
      *
-     * @param scanCallback 自定义回调
+     * @param ViseScanCallback 自定义回调
      */
-    public void stopScan(ScanCallback scanCallback) {
-        if (scanCallback == null) {
-            throw new IllegalArgumentException("this ScanCallback is Null!");
+    public void stopScan(ViseScanCallback ViseScanCallback) {
+        if (ViseScanCallback == null) {
+            throw new IllegalArgumentException("this ViseScanCallback is Null!");
         }
-        scanCallback.setScan(false).removeHandlerMsg().scan();
+        ViseScanCallback.setScan(false).removeHandlerMsg().scan();
     }
 
     /**
@@ -160,6 +165,27 @@ public class ViseBle {
             public void onScanTimeout() {
                 connectCallback.onConnectFailure(new TimeoutException());
             }
+        }, new ViseLeScanCallback() {
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+                for (ScanResult result : results) {
+                }
+                ViseLog.i("onBatchScanResults ");
+            }
+
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                ViseLog.i("onScanResult ");
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                super.onScanFailed(errorCode);
+                ViseLog.i("onScanFailed ");
+            }
         }).setDeviceMac(mac));
     }
 
@@ -197,6 +223,27 @@ public class ViseBle {
             @Override
             public void onScanTimeout() {
                 connectCallback.onConnectFailure(new TimeoutException());
+            }
+        }, new ViseLeScanCallback() {
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+                for (ScanResult result : results) {
+                }
+                ViseLog.i("onBatchScanResults ");
+            }
+
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                ViseLog.i("onScanResult ");
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                super.onScanFailed(errorCode);
+                ViseLog.i("onScanFailed ");
             }
         }).setDeviceName(name));
     }

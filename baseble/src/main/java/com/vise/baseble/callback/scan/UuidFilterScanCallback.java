@@ -1,5 +1,6 @@
 package com.vise.baseble.callback.scan;
 
+import android.bluetooth.le.ScanCallback;
 import android.os.ParcelUuid;
 
 import com.vise.baseble.model.BluetoothLeDevice;
@@ -11,11 +12,11 @@ import java.util.UUID;
  * @author: <a href="http://www.xiaoyaoyou1212.com">DAWI</a>
  * @date: 17/9/12 23:20.
  */
-public class UuidFilterScanCallback extends ScanCallback {
+public class UuidFilterScanCallback extends ViseScanCallback {
     private UUID uuid;//设备uuid
 
-    public UuidFilterScanCallback(IScanCallback scanCallback) {
-        super(scanCallback);
+    public UuidFilterScanCallback(IScanCallback ViseScanCallback, ViseLeScanCallback ViseLeScanCallback) {
+        super(ViseScanCallback, ViseLeScanCallback);
     }
 
     public UuidFilterScanCallback setUuid(String uuid) {
